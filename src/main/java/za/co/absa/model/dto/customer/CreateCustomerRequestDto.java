@@ -1,11 +1,11 @@
-package za.co.absa.model.dto;
+package za.co.absa.model.dto.customer;
 
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-public class UpdateCustomerRequestDto {
+public class CreateCustomerRequestDto {
 
     private String name;
 

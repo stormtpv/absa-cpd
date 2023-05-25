@@ -1,13 +1,13 @@
-package za.co.absa.model.dto;
+package za.co.absa.model.dto.customer;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Data
-public class CreateCustomerRequestDto {
+public class CustomerResponseDto {
+
+    private Long id;
 
     private String name;
 

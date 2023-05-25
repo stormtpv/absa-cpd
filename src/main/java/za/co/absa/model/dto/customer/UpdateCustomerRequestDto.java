@@ -1,13 +1,11 @@
-package za.co.absa.model.dto;
+package za.co.absa.model.dto.customer;
 
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-public class CustomerResponseDto {
-
-    private Long id;
+public class UpdateCustomerRequestDto {
 
     private String name;
 

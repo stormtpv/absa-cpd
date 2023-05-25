@@ -3,13 +3,17 @@ package za.co.absa.service;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import za.co.absa.exception.UserNotFoundException;
 import za.co.absa.model.domain.Customer;
-import za.co.absa.model.dto.CreateCustomerRequestDto;
-import za.co.absa.model.dto.CustomerResponseDto;
-import za.co.absa.model.dto.UpdateCustomerRequestDto;
+import za.co.absa.model.dto.customer.CreateCustomerRequestDto;
+import za.co.absa.model.dto.customer.CustomerResponseDto;
+import za.co.absa.model.dto.customer.UpdateCustomerRequestDto;
 import za.co.absa.repository.CustomerRepository;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +26,7 @@ public class CustomerService {
         Optional<Customer> foundCustomer = customerRepository.findByName(requestDto.getName());
 
         if (foundCustomer.isPresent()) {
-            throw new IllegalArgumentException("User with name " + requestDto.getName() + " already exists");
+            throw new UserNotFoundException(requestDto.getName());
         }
 
         Customer customer = modelMapper.map(requestDto, Customer.class);
@@ -40,7 +44,7 @@ public class CustomerService {
 
     public CustomerResponseDto updateCustomer(Long id, UpdateCustomerRequestDto requestDto) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " doesnt exist"));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         modelMapper.map(requestDto, customer);
 
@@ -51,8 +55,14 @@ public class CustomerService {
 
     public void deleteById(Long id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " doesnt exist"));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
        customerRepository.delete(customer);
+    }
+
+    public List<CustomerResponseDto> findAll() {
+        return customerRepository.findAll().stream()
+                .map(customer -> modelMapper.map(customer, CustomerResponseDto.class))
+                .collect(Collectors.toList());
     }
 }

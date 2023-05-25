@@ -4,15 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import za.co.absa.model.domain.Product;
 import za.co.absa.model.dto.customer.CreateCustomerRequestDto;
 import za.co.absa.model.dto.customer.CustomerResponseDto;
 import za.co.absa.model.dto.customer.UpdateCustomerRequestDto;
+import za.co.absa.model.dto.product.CreateProductRequestDto;
 import za.co.absa.model.dto.product.ProductResponseDto;
-import za.co.absa.service.CustomerService;
-import za.co.absa.util.CustomerModelAssembler;
+import za.co.absa.model.dto.product.UpdateProductRequestDto;
+import za.co.absa.service.ProductService;
+import za.co.absa.util.ProductModelAssembler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,42 +25,42 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/products")
 @RequiredArgsConstructor
-public class CustomerController {
+public class ProductController {
 
-    private final CustomerService customerService;
-    private final CustomerModelAssembler assembler;
+    private final ProductService productService;
+    private final ProductModelAssembler assembler;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CreateCustomerRequestDto requestDto) {
-        CustomerResponseDto customer = customerService.createCustomer(requestDto);
-        EntityModel<CustomerResponseDto> entityModel = assembler.toModel(customer);
+    public ResponseEntity<?> create(@RequestBody CreateProductRequestDto requestDto) {
+        ProductResponseDto product = productService.createProduct(requestDto);
+        EntityModel<ProductResponseDto> entityModel = assembler.toModel(product);
         return ResponseEntity
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
     }
 
     @GetMapping("/{id}")
-    public EntityModel<CustomerResponseDto> getById(@PathVariable("id") Long id) {
-        CustomerResponseDto customerResponse = customerService.findById(id);
-        return assembler.toModel(customerResponse);
+    public EntityModel<ProductResponseDto> getById(@PathVariable("id") Long id) {
+        ProductResponseDto productResponse = productService.findById(id);
+        return assembler.toModel(productResponse);
     }
 
     @GetMapping
-    public CollectionModel<EntityModel<CustomerResponseDto>> findAll() {
-        List<EntityModel<CustomerResponseDto>> products = customerService.findAll().stream()
+    public CollectionModel<EntityModel<ProductResponseDto>> findAll() {
+        List<EntityModel<ProductResponseDto>> products = productService.findAll().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(products, linkTo(methodOn(CustomerController.class).findAll()).withSelfRel());
+        return CollectionModel.of(products, linkTo(methodOn(ProductController.class).findAll()).withSelfRel());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
-                                                      @RequestBody UpdateCustomerRequestDto requestDto) {
-        CustomerResponseDto customerResponseDto = customerService.updateCustomer(id, requestDto);
-        EntityModel<CustomerResponseDto> entityModel = assembler.toModel(customerResponseDto);
+                                                     @RequestBody UpdateProductRequestDto requestDto) {
+        ProductResponseDto productResponseDto = productService.updateProduct(id, requestDto);
+        EntityModel<ProductResponseDto> entityModel = assembler.toModel(productResponseDto);
 
         return ResponseEntity
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -65,7 +69,7 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable("id") Long id) {
-        customerService.deleteById(id);
+        productService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
