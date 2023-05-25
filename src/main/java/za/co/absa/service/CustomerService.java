@@ -39,7 +39,7 @@ public class CustomerService {
         Optional<Customer> foundCustomer = customerRepository.findById(id);
         return foundCustomer
                 .map(customer -> modelMapper.map(customer, CustomerResponseDto.class))
-                .orElse(null);
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public CustomerResponseDto updateCustomer(Long id, UpdateCustomerRequestDto requestDto) {
