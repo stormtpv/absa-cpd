@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: absa-management
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS asba\;SET SCHEMA asba;DATABASE_TO_UPPER=false
+    username: admin
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    schemas: asba
