@@ -22,11 +22,12 @@ CREATE TABLE customers
     birth_date        date,
     address           VARCHAR(255),
     registration_date date,
+    version           BIGINT NOT NULL,
     CONSTRAINT pk_customers PRIMARY KEY (id)
 );
 
 ALTER TABLE customers
-    ADD CONSTRAINT customer_name_birthDate_uc UNIQUE (name, birth_date);
+    ADD CONSTRAINT customer_name_birthDate_uc UNIQUE (name, version);
 
 CREATE SEQUENCE IF NOT EXISTS purchases_seq START WITH 1 INCREMENT BY 1;
 

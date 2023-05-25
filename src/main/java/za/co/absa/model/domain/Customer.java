@@ -13,9 +13,9 @@ import java.util.Set;
 @Entity(name = "customers")
 @Table(name = "customers",
         uniqueConstraints =
-        @UniqueConstraint(name = "customer_name_birthDate_uc", columnNames = {
-                "name", "birthDate"
-        }))
+        @UniqueConstraint(name = "customer_name_birthDate_uc",
+                columnNames = {"name", "version"}
+        ))
 @Getter
 @Setter
 @ToString
@@ -26,7 +26,7 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customers_gen")
     @SequenceGenerator(name = "customers_gen", sequenceName = "customers_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
     private String name;
@@ -37,6 +37,9 @@ public class Customer {
 
     @CreatedDate
     private LocalDate registrationDate;
+
+    @Version
+    private long version;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "customer", orphanRemoval = true)
