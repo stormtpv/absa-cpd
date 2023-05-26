@@ -3,20 +3,14 @@ package za.co.absa.service;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import za.co.absa.exception.ProductAlreadyExistException;
 import za.co.absa.exception.ProductNotFoundException;
-import za.co.absa.exception.UserNotFoundException;
-import za.co.absa.model.domain.Customer;
 import za.co.absa.model.domain.Product;
-import za.co.absa.model.dto.customer.CreateCustomerRequestDto;
-import za.co.absa.model.dto.customer.CustomerResponseDto;
-import za.co.absa.model.dto.customer.UpdateCustomerRequestDto;
 import za.co.absa.model.dto.product.CreateProductRequestDto;
 import za.co.absa.model.dto.product.ProductResponseDto;
 import za.co.absa.model.dto.product.UpdateProductRequestDto;
-import za.co.absa.repository.CustomerRepository;
 import za.co.absa.repository.ProductRepository;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +26,7 @@ public class ProductService {
         Optional<Product> foundProduct = productRepository.findByName(requestDto.getName());
 
         if (foundProduct.isPresent()) {
-            throw new ProductNotFoundException(requestDto.getName());
+            throw new ProductAlreadyExistException(requestDto.getName());
         }
 
         Product product = modelMapper.map(requestDto, Product.class);
@@ -45,7 +39,7 @@ public class ProductService {
         Optional<Product> foundProduct = productRepository.findById(id);
         return foundProduct
                 .map(product -> modelMapper.map(product, ProductResponseDto.class))
-                .orElse(null);
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     public ProductResponseDto updateProduct(Long id, UpdateProductRequestDto requestDto) {
