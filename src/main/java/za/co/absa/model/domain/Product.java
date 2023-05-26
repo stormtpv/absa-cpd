@@ -3,6 +3,7 @@ package za.co.absa.model.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.NaturalId;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -11,7 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "products",
         uniqueConstraints =
-        @UniqueConstraint(name = "product_name_uc", columnNames = "name"))
+        @UniqueConstraint(name = "product_name_uc", columnNames = {"name", "version"}))
 @Getter
 @Setter
 @ToString
@@ -26,6 +27,7 @@ public class Product {
     private Long id;
 
     @Column(unique = true)
+    @NaturalId
     private String name;
 
     private String description;
@@ -34,12 +36,15 @@ public class Product {
 
     private Long unitsAvailable;
 
+    @Version
+    private long version;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Product product = (Product) o;
-        return getId() != null && Objects.equals(getId(), product.getId());
+        return getId() != null && Objects.equals(getName(), product.getName());
     }
 
     @Override

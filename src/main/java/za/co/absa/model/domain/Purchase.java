@@ -4,25 +4,27 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
+@Entity(name = "purchases")
 @Table(name = "purchases")
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Purchase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purchases_gen")
     @SequenceGenerator(name = "purchases_gen", sequenceName = "purchases_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
     private Long unitsBought;

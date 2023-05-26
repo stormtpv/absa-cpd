@@ -3,6 +3,7 @@ package za.co.absa.model.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ public class Customer {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
+    @NaturalId
     private String name;
 
     private LocalDate birthDate;
@@ -42,7 +44,7 @@ public class Customer {
     private long version;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "customer", orphanRemoval = true)
+    @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
     public void addPurchase(Purchase purchase) {
@@ -60,7 +62,7 @@ public class Customer {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Customer customer = (Customer) o;
-        return getId() != null && Objects.equals(getId(), customer.getId());
+        return getId() != null && Objects.equals(getName(), customer.getName());
     }
 
     @Override
