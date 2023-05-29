@@ -74,13 +74,13 @@ public class CustomerService {
     public CustomerResponseDto purchase(Long customerId, PurchaseRequestDto requestDto) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new UserNotFoundException(customerId));
-        Product product = productRepository.findById(requestDto.productId())
-                .orElseThrow(() -> new ProductNotFoundException(requestDto.productId()));
+        Product product = productRepository.findById(requestDto.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException(requestDto.getProductId()));
 
-        validateAvailableQuantityOfProduct(product.getUnitsAvailable(), requestDto.unitsToBuy());
+        validateAvailableQuantityOfProduct(product.getUnitsAvailable(), requestDto.getUnitsToBuy());
 
-        product.setUnitsAvailable(product.getUnitsAvailable() - requestDto.unitsToBuy());
-        Purchase purchase = createPurchase(product, requestDto.unitsToBuy());
+        product.setUnitsAvailable(product.getUnitsAvailable() - requestDto.getUnitsToBuy());
+        Purchase purchase = createPurchase(product, requestDto.getUnitsToBuy());
         customer.addPurchase(purchase);
 
         Customer savedEntity = customerRepository.save(customer);

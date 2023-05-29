@@ -1,4 +1,15 @@
 package za.co.absa.model.dto.purchase;
 
-public record PurchaseRequestDto(Long productId, Long unitsToBuy) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PurchaseRequestDto {
+
+    private Long productId;
+
+    private Long unitsToBuy;
 }

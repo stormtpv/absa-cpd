@@ -1,24 +1,16 @@
+
 package za.co.absa.controller;
 
-import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.projection.ProjectionFactory;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import za.co.absa.model.dto.customer.*;
 import za.co.absa.model.dto.purchase.PurchaseRequestDto;
 import za.co.absa.service.CustomerService;
-import za.co.absa.util.CustomerModelAssembler;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/customers")
@@ -26,43 +18,29 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CustomerController {
 
     private final CustomerService customerService;
-    private final CustomerModelAssembler assembler;
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> create(@RequestBody CreateCustomerRequestDto requestDto) {
-        CustomerResponseDto customer = customerService.createCustomer(requestDto);
-        EntityModel<CustomerResponseDto> entityModel = assembler.toModel(customer);
-        return ResponseEntity
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(entityModel);
+    public ResponseEntity<CustomerResponseDto> create(@RequestBody CreateCustomerRequestDto requestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(customerService.createCustomer(requestDto));
     }
 
     @GetMapping("/{id}")
-    public EntityModel<CustomerResponseDto> getById(@PathVariable("id") Long id) {
-        CustomerResponseDto customerResponse = customerService.findById(id);
-        return assembler.toModel(customerResponse);
+    public CustomerResponseDto getById(@PathVariable("id") Long id) {
+        return customerService.findById(id);
     }
 
     @GetMapping
-    public CollectionModel<EntityModel<CustomerResponseDto>> findAll() {
-        List<EntityModel<CustomerResponseDto>> products = customerService.findAll().stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(products, linkTo(methodOn(CustomerController.class).findAll()).withSelfRel());
+    public List<CustomerResponseDto> findAll() {
+        return customerService.findAll();
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> update(@PathVariable("id") Long id,
-                                    @RequestBody UpdateCustomerRequestDto requestDto) {
-        CustomerResponseDto customerResponseDto = customerService.updateCustomer(id, requestDto);
-        EntityModel<CustomerResponseDto> entityModel = assembler.toModel(customerResponseDto);
-
-        return ResponseEntity
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(entityModel);
+    public CustomerResponseDto update(@PathVariable("id") Long id,
+                                      @RequestBody UpdateCustomerRequestDto requestDto) {
+        return customerService.updateCustomer(id, requestDto);
     }
 
     @DeleteMapping("/{id}")
@@ -74,13 +52,9 @@ public class CustomerController {
 
     @PostMapping("/{id}/purchase")
     @Transactional
-    public ResponseEntity<?> makePurchase(@PathVariable("id") Long customerId,
-                                          @RequestBody PurchaseRequestDto requestDto) {
-        CustomerResponseDto customerResponseDto = customerService.purchase(customerId, requestDto);
-        EntityModel<CustomerResponseDto> entityModel = assembler.toModel(customerResponseDto);
-        return ResponseEntity
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(entityModel);
+    public CustomerResponseDto makePurchase(@PathVariable("id") Long customerId,
+                                            @RequestBody PurchaseRequestDto requestDto) {
+        return customerService.purchase(customerId, requestDto);
     }
 
     @GetMapping("/purchase/stats")
