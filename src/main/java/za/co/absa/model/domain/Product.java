@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "products",
         uniqueConstraints =
-        @UniqueConstraint(name = "product_name_uc", columnNames = {"name", "version"}))
+        @UniqueConstraint(name = "product_name_uc", columnNames = {"name"}))
 @Getter
 @Setter
 @ToString
@@ -35,9 +35,6 @@ public class Product {
     private Double price;
 
     private Long unitsAvailable;
-
-    @Version
-    private long version;
 
     @Override
     public boolean equals(Object o) {

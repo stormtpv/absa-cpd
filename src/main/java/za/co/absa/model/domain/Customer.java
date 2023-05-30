@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "customers",
         uniqueConstraints =
         @UniqueConstraint(name = "customer_name_birthDate_uc",
-                columnNames = {"name", "version"}
+                columnNames = {"name"}
         ))
 @Getter
 @Setter
@@ -39,9 +39,6 @@ public class Customer {
 
     @CreatedDate
     private LocalDate registrationDate;
-
-    @Version
-    private long version;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
