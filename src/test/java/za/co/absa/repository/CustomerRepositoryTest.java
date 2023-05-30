@@ -69,9 +69,9 @@ class CustomerRepositoryTest {
                 });
 
         customerRepository.findByName("Paul")
-                        .ifPresent(customer -> {
-                            Assertions.assertEquals(3L, customer.getPurchases().size());
-                        });
+                .ifPresent(customer -> {
+                    Assertions.assertEquals(3L, customer.getPurchases().size());
+                });
     }
 
     @Test

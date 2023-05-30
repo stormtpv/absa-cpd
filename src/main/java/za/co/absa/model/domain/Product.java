@@ -5,9 +5,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.NaturalId;
 
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "products",
